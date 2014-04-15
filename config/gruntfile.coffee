@@ -1,3 +1,7 @@
+###
+Gruntfile.coffee
+###
+
 module.exports = (grunt) ->
   # grunt.loadNpmTasks "grunt-contrib-uglify"
   # grunt.loadNpmTasks "grunt-contrib-jshint"
