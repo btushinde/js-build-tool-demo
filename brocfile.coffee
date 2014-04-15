@@ -15,10 +15,6 @@ findBowerTrees =      require('broccoli-bower')
 
 plugins =             require('broccoli-load-plugins')()
 
-console.log plugins
-
-
-
 var filterCoffeeScript = require('broccoli-coffee')
 var filterTemplates = require('broccoli-template')
 var uglifyJavaScript = require('broccoli-uglify-js')

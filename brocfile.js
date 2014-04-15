@@ -41,6 +41,13 @@ var jsFiles = plugins.staticCompiler(assets, {
   destDir: 'js'
 })
 jsFiles = preprocess(jsFiles)
+jsFiles = plugins.ngMin(jsFiles)
+
+if (plugins.env.getEnv() === 'production') {
+  jsFiles = plugins.closureCompiler(jsFiles, {
+    externs: 'config/externs/angular-1.2.js'
+  })
+}
 
 
 // CSS
@@ -60,6 +67,7 @@ var templateFiles = plugins.staticCompiler(assets, {
 templateFiles = preprocess(templateFiles)
 templateFiles = processTemplates(templateFiles)
 
+
 // Public
 var publicFiles = plugins.staticCompiler('public', {
   srcDir: '/',
@@ -68,6 +76,8 @@ var publicFiles = plugins.staticCompiler('public', {
 publicFiles = preprocess(publicFiles)
 publicFiles = processTemplates(publicFiles)
 
+
+// Bower Modules
 var bowerFiles = plugins.staticCompiler('bower_components', {
   srcDir: '/',
   destDir: '/vendor'
@@ -83,9 +93,3 @@ module.exports = plugins.mergeTrees([appAndDependencies])
 
 
 
-// if (env === 'production') {
-//   appJs = uglifyJavaScript(appJs, {
-//     // mangle: false,
-//     // compress: false
-//   })
-// }

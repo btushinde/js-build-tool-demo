@@ -67,15 +67,16 @@ Learn = (learnJSON, config) ->
     @template = template
     @append()
   return
-"use strict"
+
+
 _ = ((_) ->
   _.defaults = (object) ->
     return object  unless object
     argsIndex = 1
-    argsLength = arguments_.length
+    argsLength = arguments.length
 
     while argsIndex < argsLength
-      iterable = arguments_[argsIndex]
+      iterable = arguments[argsIndex]
       if iterable
         for key of iterable
           object[key] = iterable[key]  unless object[key]?

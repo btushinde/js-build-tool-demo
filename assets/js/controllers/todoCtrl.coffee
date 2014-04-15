@@ -6,7 +6,6 @@ The main controller for the app. The controller:
 - exposes the model to the template and provides event handlers
 ###
 angular.module("todomvc").controller "TodoCtrl", TodoCtrl = ($scope, $routeParams, $filter, todoStorage) ->
-  "use strict"
   todos = $scope.todos = todoStorage.get()
   $scope.newTodo = ""
   $scope.editedTodo = null

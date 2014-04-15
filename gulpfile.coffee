@@ -31,8 +31,7 @@ $ =             require('gulp-load-plugins')(camelize: true)
 $.util =        require 'gulp-util'
 
 
-
-gulp =        require('gulp')
+gulp =          require('gulp')
 # coffee =      require('gulp-coffee')
 # concat =      require('gulp-concat')
 # uglify =      require('gulp-uglify')
