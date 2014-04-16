@@ -14,11 +14,8 @@ preprocess = (tree) ->
   tree
 
 processStyles = (tree) ->
-  tree = plugins.autoprefixer(tree, {})
-  tree = plugins.uncss(tree,
-    html: ['index.html']
-  )
-  tree = plugins.csso(tree, {})
+  tree = plugins.autoprefixer(tree)
+  tree = plugins.csso(tree)
   tree
 
 processTemplates = (tree) ->

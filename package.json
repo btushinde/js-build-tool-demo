@@ -73,6 +73,7 @@
     "run-sequence": "~0.3.6",
     "jshint-stylish": "~0.1.5",
     "connect": "~2.14.4",
-    "gulp-util": "~2.2.14"
+    "gulp-util": "~2.2.14",
+    "grunt-contrib-connect": "~0.7.1"
   }
 }
