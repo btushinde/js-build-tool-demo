@@ -2,31 +2,7 @@
 Gulpfile.coffee
 ###
 
-# "gulp": "*",
-# "gulp-load-plugins": "*",
-# "gulp-watch": "*",
-# "gulp-clean": "*",
-# "gulp-rename": "*",
-# "gulp-concat": "*",
-# "gulp-exec": "*",
-# "gulp-newer": "*",
-# "gulp-changed": "*",
-# "gulp-cached": "*",
-# "gulp-coffee": "*",
-# "gulp-coffeelint": "*",
-# "gulp-closure-compiler": "*",
-# "gulp-jade": "*",
-# "gulp-stylus": "*",
-# "gulp-htmlmin": "*",
-# "gulp-uncss": "*",
-# "gulp-csso": "*",
-# "gulp-autoprefixer": "*",
 
-
-
-#=============================================
-# General Modules
-#=============================================
 _ =               require 'lodash'
 connect =         require 'connect'
 es =              require 'event-stream'
@@ -36,157 +12,79 @@ lazypipe =        require 'lazypipe'
 path =            require 'path'
 join =            path.join
 runSequence =     require 'run-sequence'
-
 coffeeStylish =   require('coffeelint-stylish').reporter
-jsStylish =       require 'jshint-stylish'
 
 
-
-#=============================================
-# Gulp Tasks
-#=============================================
-
-# Gulp
 gulp =          require 'gulp'
 $ =             require('gulp-load-plugins')(camelize: true)
 $.util =        require 'gulp-util'
 
 
-#=============================================
-# Configuration
-#=============================================
-cfg =             require './build.config'
-isPrduction =     $.util.env.production
-paths = cfg.paths
-
-
-gulp.task 'default', ->
-  console.log 'default task!'
-
-
-#=============================================
-# File Source Factories
-#=============================================
-assetFiles = (pattern) ->
-  gulp.src([cfg.assetDir + '/**'])
-    .pipe($.filter pattern)
-
-buildFiles = (pattern) ->
-  gulp.src([cfg.buildDir + '/**'])
-    .pipe($.filter pattern)
-
-
-gulp.task 'test', ->
-  console.log compile
-  files.assets.js()
-    .pipe compile.javascript
-    .pipe dest()
-
-
-files =
-  build:
-    all: -> buildFiles '**/*'
-  assets:
-    all: ->
-      assetFiles '**/*'
-    coffee: ->
-      assetFiles '**/*.coffee'
-        .pipe $.coffeelint cfg.taskOptions.coffee
-        .pipe $.coffeelint.reporter coffeeStylish()
-    jade: ->
-      assetFiles '**/*.jade'
-    stylus: ->
-      assetFiles '*/app.styl'
-
-dest = -> gulp.dest cfg.buildDir
-
-
-
-#=============================================
-# Main Tasks
-#=============================================
-
-watchTasks = lazypipe()
-  .pipe $.plumber
-  .pipe $.watch
-
-gulp.task 'default', ->
-  runSequence(
-    'clean:build'
-    [
-      'build:coffee'
-      'build:stylus'
-      'build:jade'
-    ]
-  )
-
-gulp.task 'build', ['default']
-gulp.task 'watch', ['default']
-
-# gulp.task 'watch', ->
-#   $.watch(
-#     glob: 'assets/js/**/*.coffee'
-#     emitOnGlob: false
-#     name: "Templates"
-#     runSequence 'build:coffee'
-#   )
-
-#     $.watch(
-#     glob: 'assets/js/**/*.coffee'
-#     emitOnGlob: false
-#     name: "Templates"
-#     runSequence 'build:coffee'
-#   )
-
-
-
 #---------------------------------------------
-# Build Assets
+# Build Assets + Watch/Reload
 #---------------------------------------------
-
-# CoffeeScript
 gulp.task 'build:coffee', ->
-  files.assets.coffee()
-    .pipe watchTasks()
+  gulp.src 'assets/**/*.coffee'
+    .pipe $.changed('build/gulpBuild', {extension: '.coffee'})
     .pipe $.coffee().on('error', $.util.log)
-    .pipe dest()
+    .pipe gulp.dest 'build/gulpBuild'
 
-# Stylus
 gulp.task 'build:stylus', ->
-  files.assets.stylus()
-    .pipe watchTasks()
+  gulp.src 'assets/**/*.styl'
+    .pipe $.changed('build/gulpBuild', {extension: '.styl'})
     .pipe $.stylus()
-    .pipe dest()
+    .pipe gulp.dest 'build/gulpBuild'
 
-# Jade
 gulp.task 'build:jade', ->
-  files.assets.jade()
-    .pipe watchTasks()
+  gulp.src ['assets/**/*.jade', 'public/**/*.jade']
+    .pipe $.changed('build/gulpBuild', {extension: '.jade'})
     .pipe $.jade()
-    .pipe dest()
+    .pipe gulp.dest 'build/gulpBuild'
 
+
+#---------------------------------------------
+# Copy Files
+#---------------------------------------------
+gulp.task 'copy:json', ->
+  gulp.src ['assets/**/*', 'public/**/*']
+    .pipe $.filter '**/*.json'
+    .pipe gulp.dest 'build/gulpBuild'
+
+gulp.task 'copy:vendor', ->
+  gulp.src 'bower_components/**/*'
+    .pipe gulp.dest 'build/gulpBuild/vendor'
 
 
 #---------------------------------------------
 # Delete Files
 #---------------------------------------------
-gulp.task 'clean', ['clean:build']
-
 gulp.task 'clean:build', ->
-   gulp.src cfg.buildDir
-    .pipe $.clean(cfg.taskOptions.clean)
+   gulp.src 'build/gulpBuild'
+    .pipe $.clean(read: false)
 
 gulp.task 'clean:js', ->
-  gulp.src cfg.buildDir + '/' + cfg.jsDir
-    .pipe $.clean(cfg.taskOptions.clean)
+  gulp.src 'build/gulpBuild/js'
+    .pipe $.clean(read: false)
 
 gulp.task 'clean:css', ->
-  gulp.src cfg.buildDir + '/' + cfg.cssDir
-    .pipe $.clean(cfg.taskOptions.clean)
+  gulp.src 'build/gulpBuild/css'
+    .pipe $.clean(read: false)
 
 gulp.task 'clean:templates', ->
-  gulp.src cfg.buildDir + '/' + cfg.templateDir
-    .pipe $.clean(cfg.taskOptions.clean)
+  gulp.src 'build/gulpBuild/templates'
+    .pipe $.clean(read: false)
 
 
+#---------------------------------------------
+# Register Tasks
+#---------------------------------------------
+gulp.task 'clean', ['clean:build']
+gulp.task 'copy', ['copy:json', 'copy:vendor']
+gulp.task 'build', ['build:coffee', 'build:stylus', 'build:jade', 'copy']
+gulp.task 'watch', ->
+  gulp.watch 'assets/**/*.coffee', ['build:coffee']
+  gulp.watch 'assets/**/*.styl', ['build:stylus']
+  gulp.watch 'assets/**/*.jade', ['build:jade']
 
+gulp.task 'default', ->
+  runSequence 'clean', 'build', 'watch'

@@ -11,7 +11,10 @@ module.exports = (grunt) ->
   require("load-grunt-tasks")(grunt)
 
   grunt.initConfig
-    # Watch and compile app whenever changes are made.
+
+    #---------------------------------------------
+    # Watch + Reload
+    #---------------------------------------------
     watch:
       options:
         nospawn: true
@@ -30,15 +33,18 @@ module.exports = (grunt) ->
         tasks:    ['copy:json']
 
 
-    # PRECOMPILE ASSETS
-    # Compile Jade to HTML
+    #---------------------------------------------
+    # Build Assets
+    #---------------------------------------------
+
+    # Jade
     jade:
       compile:
         files: [{
           expand: true
           cwd:  'assets'
           src:  '**/*.jade'
-          dest: 'build/grunt'
+          dest: 'build/gruntBuild'
           ext:  '.html'
         }]
       public:
@@ -46,46 +52,49 @@ module.exports = (grunt) ->
           expand: true
           cwd:  'public'
           src:  '**/*.jade'
-          dest: 'build/grunt'
+          dest: 'build/gruntBuild'
           ext:  '.html'
         }]
       options:
         pretty:   true
         client:   false
 
-    # Compile Stylus to CSS
+    # Stylus
     stylus:
       compile:
         files: [{
           expand: true
           cwd:  'assets'
           src:  '**/*.styl'
-          dest: 'build/grunt'
+          dest: 'build/gruntBuild'
           ext:  '.css'
         }]
         options:
           linenos:  true
           compress: false
 
-    # Compile CoffeeScript
+    # Coffeescript
     coffee:
       compile:
         files: [{
           expand: true
           cwd:  'assets'
           src:  '**/*.coffee'
-          dest: 'build/grunt'
+          dest: 'build/gruntBuild'
           ext:  '.js'
         }]
 
-    # CoffeeLint for helpful feedback
+
+    #---------------------------------------------
+    # Lint
+    #---------------------------------------------
     coffeelint:
       all:
         files: [{
           expand: true
           cwd:  'assets'
           src:  '**/*.coffee'
-          dest: 'build/grunt'
+          dest: 'build/gruntBuild'
           ext:  '.js'
         }]
         options:
@@ -93,14 +102,16 @@ module.exports = (grunt) ->
             value: 150
             level: 'warn'
 
-
+    #---------------------------------------------
+    # Copy Files
+    #---------------------------------------------
     copy:
       json:
         files: [{
           expand: true
           cwd:  'public'
           src:  '**/*.json'
-          dest: 'build/grunt'
+          dest: 'build/gruntBuild'
           ext:  '.json'
         }]
       vendor:
@@ -108,27 +119,35 @@ module.exports = (grunt) ->
           expand: true
           cwd:  'bower_components'
           src: '**/*'
-          dest: 'build/grunt/vendor'
+          dest: 'build/gruntBuild/vendor'
           filter: 'isFile'
         }]
 
-    # Starts a static Connect server
+
+    #---------------------------------------------
+    # Delete Files
+    #---------------------------------------------
+    clean:
+      options:
+        force: true
+      js:       ['build/gruntBuild/js']
+      css:      ['build/gruntBuild/css']
+      views:    ['build/gruntBuild/templates']
+      build:    ['build/gruntBuild']
+
+
+    #---------------------------------------------
+    # Development Server
+    #---------------------------------------------
     connect:
       server:
         options:
           port: 9001
-          base: 'build/grunt'
+          base: 'build/gruntBuild'
           keepalive: true
           livereload: true
 
-    # Remove precompile files
-    clean:
-      options:
-        force: true
-      js:       ['build/grunt/js']
-      css:      ['build/grunt/css']
-      views:    ['build/grunt/templates']
-      build:    ['build/grunt']
+
 
   # TASKS
   # Register tasks

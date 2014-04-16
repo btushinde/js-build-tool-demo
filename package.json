@@ -74,6 +74,8 @@
     "jshint-stylish": "~0.1.5",
     "connect": "~2.14.4",
     "gulp-util": "~2.2.14",
-    "grunt-contrib-connect": "~0.7.1"
+    "grunt-contrib-connect": "~0.7.1",
+    "gulp-filter": "~0.4.1",
+    "gulp-plumber": "~0.6.1"
   }
 }

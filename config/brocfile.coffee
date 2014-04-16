@@ -6,11 +6,9 @@ env = require('broccoli-env').getEnv()
 plugins = require('broccoli-load-plugins')()
 
 preprocess = (tree) ->
-  tree = plugins.coffee(tree,
-    bare: true
-  )
-  tree = plugins.jade(tree, {})
-  tree = plugins.stylus(tree, {})
+  tree = plugins.coffee(tree, {bare: true})
+  tree = plugins.jade(tree)
+  tree = plugins.stylus(tree)
   tree
 
 processStyles = (tree) ->
@@ -66,6 +64,7 @@ bowerFiles = plugins.staticCompiler('bower_components',
   srcDir: '/'
   destDir: '/vendor'
 )
+
 sourceTrees = [
   jsFiles
   cssFiles
@@ -73,8 +72,5 @@ sourceTrees = [
   publicFiles
   bowerFiles
 ]
-appAndDependencies = new plugins.mergeTrees(sourceTrees,
-  overwrite: true
-)
 
-module.exports = plugins.mergeTrees([appAndDependencies])
+module.exports = plugins.mergeTrees(sourceTrees, {overwrite: true})
