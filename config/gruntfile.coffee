@@ -38,7 +38,7 @@ module.exports = (grunt) ->
           expand: true
           cwd:  'assets'
           src:  '**/*.jade'
-          dest: 'build'
+          dest: 'build/grunt'
           ext:  '.html'
         }]
       public:
@@ -46,7 +46,7 @@ module.exports = (grunt) ->
           expand: true
           cwd:  'public'
           src:  '**/*.jade'
-          dest: 'build'
+          dest: 'build/grunt'
           ext:  '.html'
         }]
       options:
@@ -60,7 +60,7 @@ module.exports = (grunt) ->
           expand: true
           cwd:  'assets'
           src:  '**/*.styl'
-          dest: 'build'
+          dest: 'build/grunt'
           ext:  '.css'
         }]
         options:
@@ -74,7 +74,7 @@ module.exports = (grunt) ->
           expand: true
           cwd:  'assets'
           src:  '**/*.coffee'
-          dest: 'build'
+          dest: 'build/grunt'
           ext:  '.js'
         }]
 
@@ -85,7 +85,7 @@ module.exports = (grunt) ->
           expand: true
           cwd:  'assets'
           src:  '**/*.coffee'
-          dest: 'build'
+          dest: 'build/grunt'
           ext:  '.js'
         }]
         options:
@@ -100,7 +100,7 @@ module.exports = (grunt) ->
           expand: true
           cwd:  'public'
           src:  '**/*.json'
-          dest: 'build'
+          dest: 'build/grunt'
           ext:  '.json'
         }]
       vendor:
@@ -108,7 +108,7 @@ module.exports = (grunt) ->
           expand: true
           cwd:  'bower_components'
           src: '**/*'
-          dest: 'build/vendor'
+          dest: 'build/grunt/vendor'
           filter: 'isFile'
         }]
 
@@ -117,7 +117,7 @@ module.exports = (grunt) ->
       server:
         options:
           port: 9001
-          base: 'build'
+          base: 'build/grunt'
           keepalive: true
           livereload: true
 
@@ -125,10 +125,10 @@ module.exports = (grunt) ->
     clean:
       options:
         force: true
-      js:       ['build/js']
-      css:      ['build/css']
-      views:    ['build/templates']
-      build:    ['build']
+      js:       ['build/grunt/js']
+      css:      ['build/grunt/css']
+      views:    ['build/grunt/templates']
+      build:    ['build/grunt']
 
   # TASKS
   # Register tasks
